@@ -81,5 +81,14 @@ public class CollectorRegistryTest {
     registry.register(new EmptyCollector());
     assertFalse(registry.metricFamilySamples().hasMoreElements());
   }
-  
+
+  /**
+   * Test should fail on second registry with exception that there are different metrics with same name already
+   * registered. In this case does not handle prometheus server and just silently does not monitor application.
+   */
+  @Test(expected = Exception.class)
+  public void testHistogramWithSameNames() {
+    Histogram.build().name("clashing_name").help("h").register(registry);
+    Histogram.build().name("clashing_name").help("h").register(registry);
+  }
 }
